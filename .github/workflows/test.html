@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Table Example</title>
+    <style>
+        table {
+            table-layout: fixed;
+            width: 500px;
+            border-collapse: collapse;
+            background-color: #6D63FF;
+            border: 0px solid #c2c2c2;
+        }
+        th, td {
+            border: 1px solid #c2c2c2;
+            padding: 8px;
+            text-align: center;
+            background-color: #ffffff;
+        }
+        tr:first-child td {
+            border: 1px solid #FFFFFF;
+            font-weight: bold;
+            color: #FFFFFF;
+            background-color: #6D63FF;
+            font-size: 25px;
+        }
+        tr:nth-child(2) td {
+            font-weight: bold;
+        }
+        colgroup col:nth-child(1) { width: 130px; }
+        colgroup col:nth-child(2) { width: 100px; }
+        colgroup col:nth-child(3) { width: 300px; }
+        input[type="text"] {
+            width: 90%;
+            box-sizing: border-box;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table-container"></div>
+
+<script>
+    const tableContainer = document.getElementById('table-container');
+
+    const table = document.createElement('table');
+
+    table.innerHTML = `
+        <colgroup>
+            <col style="width: 130px;">
+            <col style="width: 100px;">
+            <col style="width: 300px;">
+        </colgroup>
+        <tbody>
+            <tr>
+                <td colspan="3">순익 계산기</td>
+            </tr>
+            <tr>
+                <td>목록</td>
+                <td>비율(%)</td>
+                <td>금액(만원)</td>
+            </tr>
+            ${generateRows([
+                { label: '월 매출', percentage: '100 %', currency: true },
+                { label: '재료비', percentage: true, currency: false },
+                { label: '인건비', percentage: false, currency: true },
+                { label: '부가세 및 카드수수료', percentage: true, currency: false },
+                { label: '임대료', percentage: false, currency: true },
+                { label: '관리비', percentage: false, currency: true },
+                { label: '공과금', percentage: true, currency: false },
+                { label: '기타 지출', percentage: false, currency: true },
+                { label: '순익', percentage: false, currency: false }
+            ])}
+        </tbody>
+    `;
+
+    tableContainer.appendChild(table);
+
+    function generateRows(data) {
+        return data.map(({ label, percentage, currency }) => `
+            <tr>
+                <td>${label}</td>
+                <td>${percentage === true ? `<input type="text" oninput="formatPercentage(this)">` : (percentage || '')}</td>
+                <td>${currency ? `<input type="text" oninput="formatCurrency(this)">` : ''}</td>
+            </tr>
+        `).join('');
+    }
+
+    function formatCurrency(input) {
+        const value = input.value.replace(/[^\d]/g, '');
+        input.value = value ? `${parseInt(value, 10).toLocaleString('ko-KR')} 만원` : '';
+    }
+
+    function formatPercentage(input) {
+        const value = input.value.replace(/[^\d]/g, '');
+        input.value = value ? `${parseInt(value, 10).toLocaleString('ko-KR')} %` : '';
+    }
+</script>
+
+</body>
+</html>
